@@ -6,9 +6,7 @@ import main.model.Schueler;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.Properties;
-import java.util.Vector;
+import java.util.*;
 
 /**
  * DataHandler für das Einlesen der Bilder und der Property-Datei
@@ -19,7 +17,7 @@ import java.util.Vector;
  */
 
 public class DataHandler {
-    private static final DataHandler instance = new DataHandler();
+    private static DataHandler instance;
     private static Vector<Integer> notizenIds = null;
     private static HashMap<String, Klasse> klassen = null;
     private static Properties properties = null;
@@ -28,8 +26,11 @@ public class DataHandler {
     private DataHandler(){
         klassen = new HashMap<>();
         notizenIds = new Vector<>();
+        readProperties();
     }
 
+
+    //Methoden
 
     /**
      * Liest die Properties von config.properties ein und speichert sie in einer Variable
@@ -61,7 +62,7 @@ public class DataHandler {
      * Zudem, wenn das Bild in einem zusätzlichen Ordner ist, setzt es die Hierarchie richtig um
      * @param klassenName - der Name des Ordners, entspricht dem Klassennamen.
      */
-    private static void readBilder(String klassenName){
+    public static void readBilder(String klassenName){
         File klassenOrdner;
         String pathBilder = getProperty("resourcePath") + klassenName + "/Bilder";
 
@@ -159,6 +160,19 @@ public class DataHandler {
         }
     }
 
+    public static Vector<Schueler> randomSchuelerListe(String[] klassennamen){
+        Vector<Schueler> schuelerListe = new Vector<>();
+        for (String klassenname : klassennamen){
+            for (Map.Entry<String,Schueler> schuelerSet: klassen.get(klassenname).getSchuelers().entrySet()){
+                schuelerListe.add(schuelerSet.getValue());
+            }
+        }
+        Collections.shuffle(schuelerListe);
+
+        return schuelerListe;
+    }
+
+    //Getter
 
     /**
      * Entnimmt der Variable properties eine Property
@@ -173,16 +187,16 @@ public class DataHandler {
         return DataHandler.properties.getProperty(key);
     }
 
+    public static DataHandler getInstance() {
+        if(instance == null) instance = new DataHandler();
+        return instance;
+    }
 
+    public static Vector<Integer> getNotizenIds() {
+        return notizenIds;
+    }
 
-
-
-    public static void main(String[] args) {
-        new DataHandler();
-        System.out.println(getProperty("resourcePath"));
-        readBilder("IM21a");
-        System.out.println(klassen.get("IM21a").getName());
-        changeNotizen(klassen.get("IM21a").getSchuelers().get("Lucas_Blom"), "Testtestetst");
-        changeNotizen(klassen.get("IM21a").getSchuelers().get("Marco_Spina"), "Bitet");
+    public static HashMap<String, Klasse> getKlassen() {
+        return klassen;
     }
 }

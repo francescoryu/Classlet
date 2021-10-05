@@ -38,7 +38,6 @@ public class Schueler {
 
     //Getter & Setter
 
-
     public String getPath() {
         return path;
     }
