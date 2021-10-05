@@ -1,8 +1,12 @@
 package main.data;
 
+import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
 import main.model.Klasse;
 import main.model.Schueler;
 
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.awt.*;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -171,6 +175,43 @@ public class DataHandler {
 
         return schuelerListe;
     }
+
+    public static String[] auswahlDerNamen(Vector<Schueler> schuelerAuswahl, Schueler richtigSchueler, int anzahl){
+        Vector<String> namen = new Vector<>(anzahl);
+        Vector<Schueler> schuelerAuswahlShuffled = (Vector<Schueler>) schuelerAuswahl.clone();
+        Collections.shuffle(schuelerAuswahlShuffled);
+        for (int i = 0; i < anzahl - 1; i++) {
+            if (schuelerAuswahlShuffled.get(i) != richtigSchueler){
+                namen.add(schuelerAuswahlShuffled.get(i).getVorname() + "_" + schuelerAuswahlShuffled.get(i).getNachname());
+            }
+            else {
+                anzahl++;
+            }
+
+        }
+        namen.add(richtigSchueler.getVorname() + "_" + richtigSchueler.getNachname());
+        Collections.shuffle(namen);
+
+        return Arrays.copyOf(namen.toArray(), namen.toArray().length, String[].class);
+    }
+
+    /**
+     * Returnt das Bild des Schülers
+     * @param schueler - Das Schueler-Objekt
+     * @return ImageIcon - Das Bild
+     */
+    public static ImageIcon imageFromSchueler(Schueler schueler){
+        ImageIcon icon = null;
+        try{
+            icon = new ImageIcon(ImageIO.read(new File(schueler.getPath())));
+            icon.setImage(icon.getImage().getScaledInstance(80,80, Image.SCALE_FAST));
+        } catch (IOException e){
+            e.printStackTrace();
+            throw new RuntimeException();
+        }
+        return icon;
+    }
+
 
     //Getter
 

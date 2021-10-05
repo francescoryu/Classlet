@@ -1,6 +1,7 @@
 package main.controller;
 
 import main.data.DataHandler;
+import main.view.*;
 
 /**
  * Beschreibung der Klasse
@@ -13,8 +14,14 @@ import main.data.DataHandler;
 public class Classlet {
     private DataHandler dataHandler;
 
+    private SpielGUI spielGUI;
+
     public Classlet(){
         dataHandler = DataHandler.getInstance();
+        String[] klassenliste = new String[1];
+        klassenliste[0] = "IM21a";
+        dataHandler.readBilder(klassenliste[0]);
+        spielGUI = new SpielGUI(dataHandler.randomSchuelerListe(klassenliste),0);
     }
 
 
@@ -22,6 +29,8 @@ public class Classlet {
 
 
     public static void main(String[] args) {
+        DataHandler handler = DataHandler.getInstance();
+        new Classlet();
         /*
         System.out.println(DataHandler.getProperty("resourcePath"));
         DataHandler handler = DataHandler.getInstance();

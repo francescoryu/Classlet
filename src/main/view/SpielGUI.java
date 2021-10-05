@@ -1,26 +1,30 @@
 package main.view;
 
+import main.data.DataHandler;
+import main.model.Schueler;
+
 import javax.swing.*;
 import java.awt.event.*;
 import java.awt.*;
+import java.util.Vector;
 
-class SpielGUI implements ActionListener {
+public class SpielGUI extends JFrame {
     JFrame fr;
-    JButton b1, b2, b3, b4;
+    public JButton b1, b2, b3, b4;
     JButton stop, next;
     JLabel lbl;
-    JPanel jp;
-    JPanel cnt;
+    public JLabel jp;
+    public JLabel cnt;
 
-    SpielGUI() {
+    public SpielGUI(Vector<Schueler> schuelerListe, int schuelerIndex) {
         fr = new JFrame();
         fr.setLayout(null);
         fr.setSize(600, 600);
 
-        jp = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        jp = new JLabel();
         fr.add(jp);
 
-        cnt = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        cnt = new JLabel();
         fr.add(cnt);
 
         fr.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -28,6 +32,7 @@ class SpielGUI implements ActionListener {
         Container c = fr.getContentPane();
 
         c.setBackground(Color.cyan);
+
 
         b1 = new JButton("1");
         b1.setBounds(130, 350, 100, 30);
@@ -47,6 +52,7 @@ class SpielGUI implements ActionListener {
         jp.setBounds(200, 100, 200, 200);
 
         cnt.setBackground(Color.white);
+        cnt.setName(schuelerIndex + 1 + "/" + schuelerListe.size());
         cnt.setBounds(450, 20, 100, 30);
         fr.add(cnt);
 
@@ -55,28 +61,63 @@ class SpielGUI implements ActionListener {
         lbl.setBounds(250, 10, 100, 30);
 
         fr.add(b1);
-        b1.addActionListener(this);
         fr.add(b2);
-        b2.addActionListener(this);
         fr.add(b3);
-        b3.addActionListener(this);
         fr.add(b4);
-        b4.addActionListener(this);
         fr.add(stop);
-        stop.addActionListener(this);
         fr.add(next);
-        next.addActionListener(this);
 
         fr.add(lbl);
+
+        addListeners(schuelerIndex, schuelerListe);
 
         fr.setVisible(true);
     }
 
-    public static void main(String s[]) {
-        new SpielGUI();
+
+    private void addListeners(int schuelerIndex, Vector<Schueler> schuelerListe){
+        stop.addActionListener(new StopButton());
+        next.addActionListener(new NextButton(schuelerIndex, schuelerListe));
     }
 
-    public void actionPerformed(ActionEvent e) {
 
+    class StopButton implements ActionListener{
+        @Override
+        public void actionPerformed(ActionEvent e)
+        {
+            //UebersichtGUI
+            fr.dispose();
+        }
     }
+
+    class NextButton implements ActionListener{
+        DataHandler dataHandler = DataHandler.getInstance();
+        int schuelerIndex;
+        Vector<Schueler> schuelerListe;
+
+        public NextButton(int schuelerIndex,Vector<Schueler> schuelerListe){
+            this.schuelerIndex = schuelerIndex;
+            this.schuelerListe = schuelerListe;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (schuelerListe.size() > schuelerIndex){
+                String[] namen = dataHandler.auswahlDerNamen(schuelerListe,schuelerListe.get(schuelerIndex),4);
+                b1.setText(namen[0]);
+                b2.setText(namen[1]);
+                b3.setText(namen[2]);
+                b4.setText(namen[3]);
+
+                jp.setIcon(DataHandler.imageFromSchueler(schuelerListe.get(schuelerIndex)));
+                schuelerIndex++;
+                cnt.setText(schuelerIndex + "/" + schuelerListe.size());
+            }
+            else {
+                //UebersichtGUI
+                fr.dispose();
+            }
+        }
+    }
+
 }
