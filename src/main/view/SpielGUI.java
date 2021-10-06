@@ -1,6 +1,5 @@
 package main.view;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import main.data.DataHandler;
 import main.model.Schueler;
 
@@ -147,10 +146,10 @@ public class SpielGUI extends JFrame {
                 int prozentRichtig = (int)Math.round((100 / auswahlButtonListener.laenge * auswahlButtonListener.richtige));
                 String[] klassenNamen = klassenNamen(nextButtonListener.getSchuelerListe());
 
-                DataHandler.writeHistory(klassenNamen, prozentRichtig);
+                dataHandler.writeHistory(klassenNamen, prozentRichtig);
 
             }
-            //UebersichtGUI
+            new HistoryGUI(DataHandler.getHistories());
             fr.dispose();
         }
 
