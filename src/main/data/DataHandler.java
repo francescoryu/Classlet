@@ -1,5 +1,9 @@
 package main.data;
 
+import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
 import main.model.History;
 import main.model.Klasse;
@@ -12,6 +16,8 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 /**
@@ -36,7 +42,6 @@ public class DataHandler {
         histories = new Vector<>();
 
         readProperties();
-        readHistory();
     }
 
 
@@ -219,11 +224,49 @@ public class DataHandler {
     }
 
     public static void writeHistory(String[] klassen, int prozent){
-        //TODO
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
+        String datum = dateTimeFormatter.format(LocalDateTime.now());
+
+        getHistories().add(new History(datum, klassen, prozent));
+        readHistory();
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectWriter objectWriter = objectMapper.writer(new DefaultPrettyPrinter());
+        FileOutputStream fileOutputStream = null;
+        Writer fileWriter;
+
+        String historyPath = getProperty("resourcePath") + "history.json";
+
+        try {
+            fileOutputStream = new FileOutputStream(historyPath);
+            fileWriter = new BufferedWriter(new OutputStreamWriter(fileOutputStream, StandardCharsets.UTF_8));
+            objectWriter.writeValue(fileWriter, getHistories());
+        } catch (Exception e){
+            e.printStackTrace();
+            throw new RuntimeException();
+        }
+
     }
 
     public static void readHistory(){
-        //TODO
+        String historyPath = getProperty("resourcePath") + "history.json";
+
+        try {
+            byte[] jsonData = jsonData = Files.readAllBytes(Paths.get(historyPath));
+            if (jsonData.length > 0){
+                ObjectMapper objectMapper = new ObjectMapper();
+                History[] historiesJSON = objectMapper.readValue(jsonData, History[].class);
+
+                for (History history : historiesJSON){
+                    histories.add(history);
+                }
+            }
+
+        } catch (IOException e){
+            e.printStackTrace();
+            throw new RuntimeException();
+        }
+
     }
 
     //Getter
@@ -252,5 +295,9 @@ public class DataHandler {
 
     public static HashMap<String, Klasse> getKlassen() {
         return klassen;
+    }
+
+    public static Vector<History> getHistories() {
+        return histories;
     }
 }

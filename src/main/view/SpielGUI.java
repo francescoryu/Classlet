@@ -141,10 +141,10 @@ public class SpielGUI extends JFrame {
     class StopButton implements ActionListener{
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (nextButtonListener.schuelerIndex > 1){
+            if (nextButtonListener.schuelerIndex >= 1){
                 DataHandler dataHandler = DataHandler.getInstance();
 
-                int prozentRichtig = (int)Math.round(((100 / auswahlButtonListener.laenge * 100) / 100) * 100);
+                int prozentRichtig = (int)Math.round((100 / auswahlButtonListener.laenge * auswahlButtonListener.richtige));
                 String[] klassenNamen = klassenNamen(nextButtonListener.getSchuelerListe());
 
                 DataHandler.writeHistory(klassenNamen, prozentRichtig);

@@ -13,6 +13,13 @@ public class History {
     private String[] klassenNamen;
     private int prozent;
 
+    /**
+     * Default-Konstruktor, damit das JSON Einlesen funktioniert
+     */
+    public History(){
+
+    }
+
     public History(String datum, String[] klassenNamen, int prozent){
         this.datum = datum;
         this.klassenNamen = klassenNamen;
