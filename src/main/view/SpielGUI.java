@@ -1,14 +1,19 @@
 package main.view;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import main.data.DataHandler;
 import main.model.Schueler;
 
 import javax.swing.*;
 import java.awt.event.*;
 import java.awt.*;
+import java.util.Arrays;
 import java.util.Vector;
 
 public class SpielGUI extends JFrame {
+    public StopButton stopButtonListener;
+    public NextButton nextButtonListener;
+    public AuswahlButton auswahlButtonListener;
     JFrame fr;
     public JButton b1, b2, b3, b4;
     JButton stop, next;
@@ -70,52 +75,152 @@ public class SpielGUI extends JFrame {
         fr.add(lbl);
 
         addListeners(schuelerIndex, schuelerListe);
+        nextButtonListener.actionPerformed(null);
 
         fr.setVisible(true);
     }
 
 
     private void addListeners(int schuelerIndex, Vector<Schueler> schuelerListe){
+        auswahlButtonListener = new AuswahlButton();
+        stopButtonListener = new StopButton();
+        nextButtonListener = new NextButton(schuelerIndex, schuelerListe);
+
+
+        b1.addActionListener(auswahlButtonListener);
+        b2.addActionListener(auswahlButtonListener);
+        b3.addActionListener(auswahlButtonListener);
+        b4.addActionListener(auswahlButtonListener);
+
         stop.addActionListener(new StopButton());
-        next.addActionListener(new NextButton(schuelerIndex, schuelerListe));
+        next.addActionListener(nextButtonListener);
     }
 
+    class AuswahlButton implements ActionListener{
+        int laenge = 0;
+        int richtige = 0;
+
+        public int getLaenge() {
+            return laenge;
+        }
+
+        public int getRichtige() {
+            return richtige;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            String schuelerName = ((JButton)e.getSource()).getText();
+            Schueler richtigSchueler = nextButtonListener.getSchuelerListe().get(nextButtonListener.getSchuelerIndex() - 1);
+            String richtiSchuelerName = richtigSchueler.getVorname() + " " + richtigSchueler.getNachname();
+
+            if (b1.getText().equals(richtiSchuelerName)) b1.setBackground(Color.GREEN);
+            else if (b2.getText().equals(richtiSchuelerName)) b2.setBackground(Color.GREEN);
+            else if (b3.getText().equals(richtiSchuelerName)) b3.setBackground(Color.GREEN);
+            else if (b4.getText().equals(richtiSchuelerName)) b4.setBackground(Color.GREEN);
+
+            if (!schuelerName.equals(richtiSchuelerName)){
+                ((JButton)e.getSource()).setBackground(Color.RED);
+            }
+            else {
+                richtige++;
+            }
+            laenge++;
+
+            b1.setEnabled(false);
+            b2.setEnabled(false);
+            b3.setEnabled(false);
+            b4.setEnabled(false);
+
+            nextButtonListener.setSelected(true);
+        }
+
+
+    }
 
     class StopButton implements ActionListener{
         @Override
-        public void actionPerformed(ActionEvent e)
-        {
+        public void actionPerformed(ActionEvent e) {
+            if (nextButtonListener.schuelerIndex > 1){
+                DataHandler dataHandler = DataHandler.getInstance();
+
+                int prozentRichtig = (int)Math.round(((100 / auswahlButtonListener.laenge * 100) / 100) * 100);
+                String[] klassenNamen = klassenNamen(nextButtonListener.getSchuelerListe());
+
+                DataHandler.writeHistory(klassenNamen, prozentRichtig);
+
+            }
             //UebersichtGUI
             fr.dispose();
+        }
+
+
+        private String[] klassenNamen(Vector<Schueler> schuelers){
+            Vector<String> klassenNamen = new Vector<>();
+
+            for (Schueler schueler : schuelers){
+                if (!klassenNamen.contains(schueler.getKlassenName())){
+                    klassenNamen.add(schueler.getKlassenName());
+                }
+            }
+            Object[] tmpArr = klassenNamen.toArray();
+
+            return Arrays.copyOf(tmpArr, tmpArr.length, String[].class);
         }
     }
 
     class NextButton implements ActionListener{
-        DataHandler dataHandler = DataHandler.getInstance();
-        int schuelerIndex;
-        Vector<Schueler> schuelerListe;
+        private DataHandler dataHandler = DataHandler.getInstance();
+        private boolean selected = false;
+        private int schuelerIndex;
+        private Vector<Schueler> schuelerListe;
 
         public NextButton(int schuelerIndex,Vector<Schueler> schuelerListe){
             this.schuelerIndex = schuelerIndex;
             this.schuelerListe = schuelerListe;
         }
 
+        public int getSchuelerIndex() {
+            return schuelerIndex;
+        }
+
+        public Vector<Schueler> getSchuelerListe() {
+            return schuelerListe;
+        }
+
+        public void setSelected(Boolean selected){
+            this.selected = selected;
+        }
+
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (schuelerListe.size() > schuelerIndex){
-                String[] namen = dataHandler.auswahlDerNamen(schuelerListe,schuelerListe.get(schuelerIndex),4);
-                b1.setText(namen[0]);
-                b2.setText(namen[1]);
-                b3.setText(namen[2]);
-                b4.setText(namen[3]);
+            if (selected || e == null){
+                b1.setEnabled(true);
+                b2.setEnabled(true);
+                b3.setEnabled(true);
+                b4.setEnabled(true);
 
-                jp.setIcon(DataHandler.imageFromSchueler(schuelerListe.get(schuelerIndex)));
-                schuelerIndex++;
-                cnt.setText(schuelerIndex + "/" + schuelerListe.size());
-            }
-            else {
-                //UebersichtGUI
-                fr.dispose();
+                b1.setBackground(new JButton().getBackground());
+                b2.setBackground(new JButton().getBackground());
+                b3.setBackground(new JButton().getBackground());
+                b4.setBackground(new JButton().getBackground());
+
+                if (schuelerListe.size() > schuelerIndex){
+                    String[] namen = dataHandler.auswahlDerNamen(schuelerListe,schuelerListe.get(schuelerIndex),4);
+                    b1.setText(namen[0]);
+                    b2.setText(namen[1]);
+                    b3.setText(namen[2]);
+                    b4.setText(namen[3]);
+
+                    jp.setIcon(DataHandler.imageFromSchueler(schuelerListe.get(schuelerIndex)));
+                    schuelerIndex++;
+                    cnt.setText(schuelerIndex + "/" + schuelerListe.size());
+                }
+                else {
+                    stopButtonListener.actionPerformed(null);
+                }
+
+                setSelected(false);
             }
         }
     }

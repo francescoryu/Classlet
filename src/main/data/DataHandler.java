@@ -1,6 +1,7 @@
 package main.data;
 
 import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
+import main.model.History;
 import main.model.Klasse;
 import main.model.Schueler;
 
@@ -8,6 +9,7 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
@@ -24,13 +26,17 @@ public class DataHandler {
     private static DataHandler instance;
     private static Vector<Integer> notizenIds = null;
     private static HashMap<String, Klasse> klassen = null;
+    private static Vector<History> histories = null;
     private static Properties properties = null;
 
 
     private DataHandler(){
         klassen = new HashMap<>();
         notizenIds = new Vector<>();
+        histories = new Vector<>();
+
         readProperties();
+        readHistory();
     }
 
 
@@ -182,14 +188,14 @@ public class DataHandler {
         Collections.shuffle(schuelerAuswahlShuffled);
         for (int i = 0; i < anzahl - 1; i++) {
             if (schuelerAuswahlShuffled.get(i) != richtigSchueler){
-                namen.add(schuelerAuswahlShuffled.get(i).getVorname() + "_" + schuelerAuswahlShuffled.get(i).getNachname());
+                namen.add(schuelerAuswahlShuffled.get(i).getVorname() + " " + schuelerAuswahlShuffled.get(i).getNachname());
             }
             else {
                 anzahl++;
             }
 
         }
-        namen.add(richtigSchueler.getVorname() + "_" + richtigSchueler.getNachname());
+        namen.add(richtigSchueler.getVorname() + " " + richtigSchueler.getNachname());
         Collections.shuffle(namen);
 
         return Arrays.copyOf(namen.toArray(), namen.toArray().length, String[].class);
@@ -212,6 +218,13 @@ public class DataHandler {
         return icon;
     }
 
+    public static void writeHistory(String[] klassen, int prozent){
+        //TODO
+    }
+
+    public static void readHistory(){
+        //TODO
+    }
 
     //Getter
 
