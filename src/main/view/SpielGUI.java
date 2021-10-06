@@ -4,6 +4,7 @@ import main.data.DataHandler;
 import main.model.Schueler;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.event.*;
 import java.awt.*;
 import java.util.Arrays;
@@ -19,63 +20,112 @@ public class SpielGUI extends JFrame {
     JLabel lbl;
     public JLabel jp;
     public JLabel cnt;
+    JPanel contentPanel, optionPanel, btnPanel, imgPanel;
 
     public SpielGUI(Vector<Schueler> schuelerListe, int schuelerIndex) {
-        fr = new JFrame();
+        //content
+        fr = new JFrame("Classlet - Learn");
         fr.setLayout(null);
-        fr.setSize(600, 600);
+        fr.setSize(840, 470);
+        fr.setLocationRelativeTo(null);
+
+        lbl = new JLabel("Classlet");
+        lbl.setHorizontalAlignment(JLabel.CENTER);
+        lbl.setFont(new Font("Monospace", Font.BOLD, 20));
 
         jp = new JLabel();
-        fr.add(jp);
+        jp.setBackground(Color.white);
+        jp.setSize(200, 200);
 
-        cnt = new JLabel();
-        fr.add(cnt);
 
-        fr.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-
-        Container c = fr.getContentPane();
-
-        c.setBackground(Color.cyan);
+        cnt = new JLabel("1/24");
+        cnt.setBackground(Color.white);
+        cnt.setFont(new Font("Monospace", Font.BOLD, 20));
+        cnt.setName(schuelerIndex + 1 + "/" + schuelerListe.size());
+        cnt.setSize(100, 30);
 
 
         b1 = new JButton("1");
-        b1.setBounds(130, 350, 100, 30);
         b2 = new JButton("2");
-        b2.setBounds(360, 350, 100, 30);
         b3 = new JButton("3");
-        b3.setBounds(130, 400, 100, 30);
         b4 = new JButton("4");
-        b4.setBounds(360, 400, 100, 30);
-
         stop = new JButton("stop");
-        stop.setBounds(130, 500, 100, 30);
         next = new JButton("next");
-        next.setBounds(360, 500, 100, 30);
 
-        jp.setBackground(Color.white);
-        jp.setBounds(200, 100, 200, 200);
+        next.setForeground(Color.white);
+        next.setBackground(new Color(60, 207, 207));
+        next.setFont(new Font("Monospace", Font.BOLD, 20));
+        next.setBorderPainted(false);
 
-        cnt.setBackground(Color.white);
-        cnt.setName(schuelerIndex + 1 + "/" + schuelerListe.size());
-        cnt.setBounds(450, 20, 100, 30);
-        fr.add(cnt);
+        stop.setForeground(Color.white);
+        stop.setBackground(new Color(60, 207, 207));
+        stop.setFont(new Font("Monospace", Font.BOLD, 20));
+        stop.setBorderPainted(false);
 
-        lbl = new JLabel("");
-        lbl.setText("        Classlet");
-        lbl.setBounds(250, 10, 100, 30);
+        b1.setBackground(Color.white);
+        b2.setBackground(Color.white);
+        b3.setBackground(Color.white);
+        b4.setBackground(Color.white);
 
-        fr.add(b1);
-        fr.add(b2);
-        fr.add(b3);
-        fr.add(b4);
-        fr.add(stop);
-        fr.add(next);
 
-        fr.add(lbl);
+
+
+        //Panel
+        optionPanel = new JPanel(new GridLayout(2, 2, 100, 50));
+        optionPanel.add(b1);
+        optionPanel.add(b2);
+        optionPanel.add(b3);
+        optionPanel.add(b4);
+        optionPanel.setBackground(Color.white);
+
+
+        btnPanel = new JPanel(new FlowLayout(1, 50, 20));
+        btnPanel.setBackground(Color.white);
+        btnPanel.add(stop);
+        btnPanel.add(next);
+
+        imgPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        imgPanel.setBackground(Color.white);
+
+        //Classlet name
+        gbc.anchor = GridBagConstraints.PAGE_START;
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        gbc.weightx= 1;
+        gbc.insets = new Insets(0,40,0,0);
+        imgPanel.add(lbl, gbc);
+
+        //Counter
+        gbc.gridx = 2;
+        gbc.gridy = 0;
+        gbc.weightx=0.5;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
+        imgPanel.add(cnt);
+
+        //BILD
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        gbc.weightx=1;
+        gbc.ipady = 100;
+        gbc.anchor= GridBagConstraints.CENTER;
+        gbc.fill = GridBagConstraints.NONE;
+        imgPanel.add(jp, gbc);
+
+        contentPanel = new JPanel(new BorderLayout(5, 5));
+        fr.setLayout(new BorderLayout());
+        fr.add(contentPanel, BorderLayout.CENTER);
+        contentPanel.setBorder(BorderFactory.createEmptyBorder(20, 30, 0, 30));
+        contentPanel.setBackground(Color.white);
+        contentPanel.add(optionPanel, BorderLayout.CENTER);
+        contentPanel.add(btnPanel, BorderLayout.SOUTH);
+        contentPanel.add(imgPanel, BorderLayout.NORTH);
 
         addListeners(schuelerIndex, schuelerListe);
         nextButtonListener.actionPerformed(null);
 
+        fr.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         fr.setVisible(true);
     }
 
@@ -199,10 +249,15 @@ public class SpielGUI extends JFrame {
                 b3.setEnabled(true);
                 b4.setEnabled(true);
 
-                b1.setBackground(new JButton().getBackground());
-                b2.setBackground(new JButton().getBackground());
-                b3.setBackground(new JButton().getBackground());
-                b4.setBackground(new JButton().getBackground());
+                b1.setBackground(Color.white);
+                b2.setBackground(Color.white);
+                b3.setBackground(Color.white);
+                b4.setBackground(Color.white);
+
+                b1.setBorder(new RoundedBorder(20));
+                b2.setBorder(new RoundedBorder(20));
+                b3.setBorder(new RoundedBorder(20));
+                b4.setBorder(new RoundedBorder(20));
 
                 if (schuelerListe.size() > schuelerIndex){
                     String[] namen = dataHandler.auswahlDerNamen(schuelerListe,schuelerListe.get(schuelerIndex),4);
@@ -223,5 +278,31 @@ public class SpielGUI extends JFrame {
             }
         }
     }
+
+    private static class RoundedBorder implements Border {
+
+        private int radius;
+
+
+        RoundedBorder(int radius) {
+            this.radius = radius;
+        }
+
+
+        public Insets getBorderInsets(Component c) {
+            return new Insets(this.radius + 1, this.radius + 1, this.radius + 2, this.radius);
+        }
+
+
+        public boolean isBorderOpaque() {
+            return true;
+        }
+
+
+        public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
+            g.drawRoundRect(x, y, width - 1, height - 1, radius, radius);
+        }
+    }
+
 
 }

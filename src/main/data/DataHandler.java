@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
 import main.model.History;
 import main.model.Klasse;
 import main.model.Schueler;
