@@ -10,23 +10,32 @@ import java.awt.*;
 import java.util.Arrays;
 import java.util.Vector;
 
+/**
+ * GUI für das Quiz, inklusive anonyme Klassen als Controller
+ *
+ * @author Martin Düppenbecker
+ * @author Stefan Thomsen
+ * @version 2.0
+ * @since 04.10.2021
+ */
+
 public class SpielGUI extends JFrame {
-    public StopButton stopButtonListener;
-    public NextButton nextButtonListener;
-    public AuswahlButton auswahlButtonListener;
-    JFrame fr;
-    public JButton b1, b2, b3, b4;
-    JButton stop, next;
-    JLabel lbl;
+    private StopButton stopButtonListener;
+    private NextButton nextButtonListener;
+    private AuswahlButton auswahlButtonListener;
+    private JFrame fr;
+    private JButton b1, b2, b3, b4;
+    private JButton stop, next;
+    private JLabel lbl;
     public JLabel jp;
     public JLabel cnt;
-    JPanel contentPanel, optionPanel, btnPanel, imgPanel;
+    private JPanel contentPanel, optionPanel, btnPanel, imgPanel;
 
     public SpielGUI(Vector<Schueler> schuelerListe, int schuelerIndex) {
         //content
         fr = new JFrame("Classlet - Learn");
         fr.setLayout(null);
-        fr.setSize(840, 470);
+        fr.setSize(840,600);
         fr.setLocationRelativeTo(null);
 
         lbl = new JLabel("Classlet");
@@ -303,6 +312,5 @@ public class SpielGUI extends JFrame {
             g.drawRoundRect(x, y, width - 1, height - 1, radius, radius);
         }
     }
-
 
 }

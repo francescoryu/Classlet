@@ -1,7 +1,6 @@
 package main.data;
 
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import main.model.History;
@@ -214,7 +213,7 @@ public class DataHandler {
         ImageIcon icon = null;
         try{
             icon = new ImageIcon(ImageIO.read(new File(schueler.getPath())));
-            icon.setImage(icon.getImage().getScaledInstance(80,80, Image.SCALE_FAST));
+            icon.setImage(icon.getImage().getScaledInstance(150,150, Image.SCALE_FAST));
         } catch (IOException e){
             e.printStackTrace();
             throw new RuntimeException();

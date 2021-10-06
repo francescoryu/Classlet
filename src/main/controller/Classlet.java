@@ -15,13 +15,15 @@ public class Classlet {
     private DataHandler dataHandler;
 
     private SpielGUI spielGUI;
+    private HauptseiteGUI haupseiteGUI;
 
     public Classlet(){
         dataHandler = DataHandler.getInstance();
         String[] klassenliste = new String[1];
         klassenliste[0] = "IM21a";
         dataHandler.readBilder(klassenliste[0]);
-        spielGUI = new SpielGUI(dataHandler.randomSchuelerListe(klassenliste),0);
+
+        haupseiteGUI = new HauptseiteGUI(dataHandler.randomSchuelerListe(klassenliste),0);
     }
 
 
