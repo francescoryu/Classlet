@@ -125,7 +125,7 @@ public class SpielGUI extends JFrame {
         addListeners(schuelerIndex, schuelerListe);
         nextButtonListener.actionPerformed(null);
 
-        fr.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        fr.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         fr.setVisible(true);
     }
 

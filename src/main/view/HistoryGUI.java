@@ -60,7 +60,7 @@ public class HistoryGUI extends JFrame {
         jScrollPane = new JScrollPane(panel);
         jScrollPane.getVerticalScrollBar().setUnitIncrement(16);
 
-        this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
         this.setSize(840, 470);
         this.add(jScrollPane, BorderLayout.CENTER);
