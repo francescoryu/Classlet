@@ -3,11 +3,14 @@ package main.view;
 /**
  * Beschreibung der Klasse
  *
+ * @author Martin Düppenbecker
  * @author Francesco Ryu
  * @version 1.0
  * @since 05.10.2021
  */
 
+import main.controller.Classlet;
+import main.data.DataHandler;
 import main.model.Schueler;
 
 import javax.swing.*;
@@ -19,6 +22,7 @@ import java.util.Vector;
 public class HauptseiteGUI extends JFrame {
 
     private StartButtonListener startButtonListener;
+    private HistoryButtonListener historyButtonListener;
     private JButton start;
     private JButton klassenliste;
     private JButton history;
@@ -26,7 +30,6 @@ public class HauptseiteGUI extends JFrame {
     private JTextField txtpn;
     private JPanel buttonPanel;
     private JPanel cbPanel;
-    private JPanel eastPanel;
     private JLabel titel;
 
 
@@ -81,7 +84,10 @@ public class HauptseiteGUI extends JFrame {
 
     private void addListeners(Vector<Schueler> schuelerListe, int schuelerIndex){
         startButtonListener = new StartButtonListener(schuelerListe, schuelerIndex);
+        historyButtonListener = new HistoryButtonListener();
+
         start.addActionListener(startButtonListener);
+        history.addActionListener(historyButtonListener);
     }
 
 
@@ -96,9 +102,17 @@ public class HauptseiteGUI extends JFrame {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            new SpielGUI(schuelerListe, schuelerIndex);
-            //new HauptseiteGUI(schuelerListe, schuelerIndex);
+            new SpielGUI(Classlet.neueSchuelerListe(), schuelerIndex, 2);
+
         }
     }
 
+    class HistoryButtonListener implements ActionListener{
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            DataHandler.readHistory();
+            new HistoryGUI(DataHandler.getHistories());
+        }
+    }
 }

@@ -1,7 +1,10 @@
 package main.controller;
 
 import main.data.DataHandler;
+import main.model.Schueler;
 import main.view.*;
+
+import java.util.Vector;
 
 /**
  * Beschreibung der Klasse
@@ -16,14 +19,19 @@ public class Classlet {
 
     private SpielGUI spielGUI;
     private HauptseiteGUI haupseiteGUI;
+    private static String[] klassenliste;
 
     public Classlet(){
         dataHandler = DataHandler.getInstance();
-        String[] klassenliste = new String[1];
+        klassenliste = new String[1];
         klassenliste[0] = "IM21a";
         dataHandler.readBilder(klassenliste[0]);
 
         haupseiteGUI = new HauptseiteGUI(dataHandler.randomSchuelerListe(klassenliste),0);
+    }
+
+    public static Vector<Schueler> neueSchuelerListe(){
+        return DataHandler.getInstance().randomSchuelerListe(klassenliste);
     }
 
 

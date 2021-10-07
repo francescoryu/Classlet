@@ -204,6 +204,28 @@ public class DataHandler {
         return Arrays.copyOf(namen.toArray(), namen.toArray().length, String[].class);
     }
 
+    public static ImageIcon[] auswahlDerBilder(Vector<Schueler> schuelerAuswahl, Schueler richtigSchueler, int anzahl){
+        Vector<ImageIcon> bilder = new Vector<>(anzahl);
+        Vector<Schueler> schuelerAuswahlShuffled = (Vector<Schueler>)schuelerAuswahl.clone();
+        Collections.shuffle(schuelerAuswahlShuffled);
+        for (int i = 0; i < anzahl - 1; i++) {
+            if (schuelerAuswahlShuffled.get(i) != richtigSchueler){
+                ImageIcon icon = imageFromSchueler(schuelerAuswahlShuffled.get(i));
+                icon.setDescription(schuelerAuswahlShuffled.get(i).getVorname() + " " + schuelerAuswahlShuffled.get(i).getNachname());
+                bilder.add(icon);
+            }
+            else {
+                anzahl++;
+            }
+        }
+        ImageIcon richtigSchuelerIcon = imageFromSchueler(richtigSchueler);
+        richtigSchuelerIcon.setDescription(richtigSchueler.getVorname() + " " + richtigSchueler.getNachname());
+        bilder.add(richtigSchuelerIcon);
+        Collections.shuffle(bilder);
+
+        return Arrays.copyOf(bilder.toArray(), bilder.toArray().length, ImageIcon[].class);
+    }
+
     /**
      * Returnt das Bild des Schülers
      * @param schueler - Das Schueler-Objekt
@@ -225,6 +247,7 @@ public class DataHandler {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
         String datum = dateTimeFormatter.format(LocalDateTime.now());
 
+        histories.removeAllElements();
         getHistories().add(new History(datum, klassen, prozent));
         readHistory();
 
@@ -266,6 +289,9 @@ public class DataHandler {
         }
 
     }
+
+    //public static void write
+
 
     //Getter
 

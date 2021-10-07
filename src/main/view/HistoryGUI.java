@@ -16,9 +16,9 @@ import java.util.Vector;
 
 public class HistoryGUI extends JFrame {
 
-    JScrollPane jScrollPane;
-    JPanel panel;
-    JLabel title;
+    private JScrollPane jScrollPane;
+    private JPanel panel;
+    private JLabel title;
 
     HistoryGUI(Vector<History> histories) {
         int anzahl = histories.size();
@@ -68,7 +68,4 @@ public class HistoryGUI extends JFrame {
         this.setVisible(true);
     }
 
-    public static void main(String s[]) {
-        //new HistoryGUI(50);
-    }
 }

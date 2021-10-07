@@ -15,6 +15,7 @@ import java.util.Vector;
  *
  * @author Martin Düppenbecker
  * @author Stefan Thomsen
+ * @author Francesco Ryu (v.1)
  * @version 2.0
  * @since 04.10.2021
  */
@@ -27,11 +28,11 @@ public class SpielGUI extends JFrame {
     private JButton b1, b2, b3, b4;
     private JButton stop, next;
     private JLabel lbl;
-    public JLabel jp;
-    public JLabel cnt;
+    private JLabel jp;
+    private JLabel cnt;
     private JPanel contentPanel, optionPanel, btnPanel, imgPanel;
 
-    public SpielGUI(Vector<Schueler> schuelerListe, int schuelerIndex) {
+    public SpielGUI(Vector<Schueler> schuelerListe, int schuelerIndex, int modus) {
         //content
         fr = new JFrame("Classlet - Learn");
         fr.setLayout(null);
@@ -54,10 +55,10 @@ public class SpielGUI extends JFrame {
         cnt.setSize(100, 30);
 
 
-        b1 = new JButton("1");
-        b2 = new JButton("2");
-        b3 = new JButton("3");
-        b4 = new JButton("4");
+        b1 = new JButton();
+        b2 = new JButton();
+        b3 = new JButton();
+        b4 = new JButton();
         stop = new JButton("stop");
         next = new JButton("next");
 
@@ -131,7 +132,7 @@ public class SpielGUI extends JFrame {
         contentPanel.add(btnPanel, BorderLayout.SOUTH);
         contentPanel.add(imgPanel, BorderLayout.NORTH);
 
-        addListeners(schuelerIndex, schuelerListe);
+        addListeners(schuelerIndex, schuelerListe, modus);
         nextButtonListener.actionPerformed(null);
 
         fr.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -139,10 +140,10 @@ public class SpielGUI extends JFrame {
     }
 
 
-    private void addListeners(int schuelerIndex, Vector<Schueler> schuelerListe){
-        auswahlButtonListener = new AuswahlButton();
+    private void addListeners(int schuelerIndex, Vector<Schueler> schuelerListe, int modus){
+        auswahlButtonListener = new AuswahlButton(modus);
         stopButtonListener = new StopButton();
-        nextButtonListener = new NextButton(schuelerIndex, schuelerListe);
+        nextButtonListener = new NextButton(schuelerIndex, schuelerListe, modus);
 
 
         b1.addActionListener(auswahlButtonListener);
@@ -155,34 +156,60 @@ public class SpielGUI extends JFrame {
     }
 
     class AuswahlButton implements ActionListener{
-        int laenge = 0;
-        int richtige = 0;
+        private int laenge = 0;
+        private int richtige = 0;
+        private int modus;
 
-        public int getLaenge() {
+        public AuswahlButton(int modus){
+            this.modus = modus;
+        }
+
+        int getLaenge() {
             return laenge;
         }
 
-        public int getRichtige() {
+        int getRichtige() {
             return richtige;
         }
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            String schuelerName = ((JButton)e.getSource()).getText();
             Schueler richtigSchueler = nextButtonListener.getSchuelerListe().get(nextButtonListener.getSchuelerIndex() - 1);
-            String richtiSchuelerName = richtigSchueler.getVorname() + " " + richtigSchueler.getNachname();
+            if (modus == 1){
+                String schuelerName = ((JButton)e.getSource()).getText();
+                String richtiSchuelerName = richtigSchueler.getVorname() + " " + richtigSchueler.getNachname();
 
-            if (b1.getText().equals(richtiSchuelerName)) b1.setBackground(Color.GREEN);
-            else if (b2.getText().equals(richtiSchuelerName)) b2.setBackground(Color.GREEN);
-            else if (b3.getText().equals(richtiSchuelerName)) b3.setBackground(Color.GREEN);
-            else if (b4.getText().equals(richtiSchuelerName)) b4.setBackground(Color.GREEN);
+                if (b1.getText().equals(richtiSchuelerName)) b1.setBackground(Color.GREEN);
+                else if (b2.getText().equals(richtiSchuelerName)) b2.setBackground(Color.GREEN);
+                else if (b3.getText().equals(richtiSchuelerName)) b3.setBackground(Color.GREEN);
+                else if (b4.getText().equals(richtiSchuelerName)) b4.setBackground(Color.GREEN);
 
-            if (!schuelerName.equals(richtiSchuelerName)){
-                ((JButton)e.getSource()).setBackground(Color.RED);
+                if (!schuelerName.equals(richtiSchuelerName)){
+                    ((JButton)e.getSource()).setBackground(Color.RED);
+                }
+                else {
+                    richtige++;
+                }
             }
-            else {
-                richtige++;
+            else if (modus == 2){
+                ImageIcon schuelerBild = (ImageIcon) ((JButton)e.getSource()).getIcon();
+                ImageIcon richtigSchuelerBild = DataHandler.imageFromSchueler(richtigSchueler);
+                richtigSchuelerBild.setDescription(richtigSchueler.getVorname() + " " + richtigSchueler.getNachname());
+
+
+                if (b1.getName().equals(richtigSchuelerBild.getDescription())) b1.setBackground(Color.GREEN);
+                else if (b2.getName().equals(richtigSchuelerBild.getDescription())) b2.setBackground(Color.GREEN);
+                else if (b3.getName().equals(richtigSchuelerBild.getDescription())) b3.setBackground(Color.GREEN);
+                else if (b4.getName().equals(richtigSchuelerBild.getDescription())) b4.setBackground(Color.GREEN);
+
+                if (!((JButton)e.getSource()).getName().equals(richtigSchuelerBild.getDescription())){
+                    ((JButton)e.getSource()).setBackground(Color.RED);
+                }
+                else {
+                    richtige++;
+                }
             }
+
             laenge++;
 
             b1.setEnabled(false);
@@ -199,16 +226,18 @@ public class SpielGUI extends JFrame {
     class StopButton implements ActionListener{
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (nextButtonListener.schuelerIndex >= 1){
-                DataHandler dataHandler = DataHandler.getInstance();
+            if (auswahlButtonListener.getLaenge() > 0){
+                if (nextButtonListener.schuelerIndex >= 1){
+                    DataHandler dataHandler = DataHandler.getInstance();
 
-                int prozentRichtig = (int)Math.round((100 / auswahlButtonListener.laenge * auswahlButtonListener.richtige));
-                String[] klassenNamen = klassenNamen(nextButtonListener.getSchuelerListe());
+                    int prozentRichtig = (int)Math.round((100 / auswahlButtonListener.getLaenge() * auswahlButtonListener.getRichtige()));
+                    String[] klassenNamen = klassenNamen(nextButtonListener.getSchuelerListe());
 
-                dataHandler.writeHistory(klassenNamen, prozentRichtig);
+                    dataHandler.writeHistory(klassenNamen, prozentRichtig);
 
+                }
+                new HistoryGUI(DataHandler.getHistories());
             }
-            new HistoryGUI(DataHandler.getHistories());
             fr.dispose();
         }
 
@@ -232,10 +261,12 @@ public class SpielGUI extends JFrame {
         private boolean selected = false;
         private int schuelerIndex;
         private Vector<Schueler> schuelerListe;
+        private int modus;  //1 = Namen wählen, 2 = Bild wählen
 
-        public NextButton(int schuelerIndex,Vector<Schueler> schuelerListe){
+        public NextButton(int schuelerIndex,Vector<Schueler> schuelerListe, int modus){
             this.schuelerIndex = schuelerIndex;
             this.schuelerListe = schuelerListe;
+            this.modus = modus;
         }
 
         public int getSchuelerIndex() {
@@ -268,14 +299,30 @@ public class SpielGUI extends JFrame {
                 b3.setBorder(new RoundedBorder(20));
                 b4.setBorder(new RoundedBorder(20));
 
-                if (schuelerListe.size() > schuelerIndex){
-                    String[] namen = dataHandler.auswahlDerNamen(schuelerListe,schuelerListe.get(schuelerIndex),4);
-                    b1.setText(namen[0]);
-                    b2.setText(namen[1]);
-                    b3.setText(namen[2]);
-                    b4.setText(namen[3]);
 
-                    jp.setIcon(DataHandler.imageFromSchueler(schuelerListe.get(schuelerIndex)));
+                if (schuelerListe.size() > schuelerIndex){
+                    if (modus == 1){
+                        String[] namen = dataHandler.auswahlDerNamen(schuelerListe,schuelerListe.get(schuelerIndex),4);
+                        b1.setText(namen[0]);
+                        b2.setText(namen[1]);
+                        b3.setText(namen[2]);
+                        b4.setText(namen[3]);
+                        jp.setIcon(DataHandler.imageFromSchueler(schuelerListe.get(schuelerIndex)));
+                    }
+                    else if(modus == 2){
+                        ImageIcon[] bilder = dataHandler.auswahlDerBilder(schuelerListe, schuelerListe.get(schuelerIndex), 4);
+                        b1.setName(bilder[0].getDescription());
+                        b1.setIcon(bilder[0]);
+                        b2.setName(bilder[1].getDescription());
+                        b2.setIcon(bilder[1]);
+                        b3.setName(bilder[2].getDescription());
+                        b3.setIcon(bilder[2]);
+                        b4.setName(bilder[3].getDescription());
+                        b4.setIcon(bilder[3]);
+                        jp.setText(schuelerListe.get(schuelerIndex).getVorname() + " " + schuelerListe.get(schuelerIndex).getNachname());
+                    }
+
+
                     schuelerIndex++;
                     cnt.setText(schuelerIndex + "/" + schuelerListe.size());
                 }
