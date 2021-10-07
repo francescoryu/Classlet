@@ -23,6 +23,7 @@ public class HauptseiteGUI extends JFrame {
 
     private StartButtonListener startButtonListener;
     private HistoryButtonListener historyButtonListener;
+    private UebersichtButtonListener uebersichtButtonListener;
     private JButton start;
     private JButton klassenliste;
     private JButton history;
@@ -86,12 +87,33 @@ public class HauptseiteGUI extends JFrame {
 
     private void addListeners(int schuelerIndex){
         startButtonListener = new StartButtonListener(schuelerIndex);
+        uebersichtButtonListener = new UebersichtButtonListener();
         historyButtonListener = new HistoryButtonListener();
 
         start.addActionListener(startButtonListener);
+        klassenliste.addActionListener(uebersichtButtonListener);
         history.addActionListener(historyButtonListener);
     }
 
+    private String[] klassenNamen(){
+        boolean ausgewaehlt = false;
+        Vector<String> tmpKlassenNamen = new Vector<>();
+        for (int i = 0; i < checkBoxes.size(); i++){
+            if (checkBoxes.get(i).isSelected()){
+                tmpKlassenNamen.add(checkBoxes.get(i).getText());
+                ausgewaehlt = true;
+            }
+        }
+
+        if (ausgewaehlt){
+            String[] klassenNamen = Arrays.copyOf(tmpKlassenNamen.toArray(), tmpKlassenNamen.size(), String[].class);
+            for (String klasse : klassenNamen){
+                DataHandler.readBilder(klasse);
+            }
+            return klassenNamen;
+        }
+        return new String[0];
+    }
 
     class StartButtonListener implements ActionListener{
         private int schuelerIndex;
@@ -103,27 +125,14 @@ public class HauptseiteGUI extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             int modus = 1;
-
             if (gesicht.isSelected()){
                 modus = 2;
             }
-            boolean ausgewaehlt = false;
-            Vector<String> tmpKlassenNamen = new Vector<>();
-            for (int i = 0; i < checkBoxes.size(); i++){
-                if (checkBoxes.get(i).isSelected()){
-                    tmpKlassenNamen.add(checkBoxes.get(i).getText());
-                    ausgewaehlt = true;
-                }
-            }
 
-            if (ausgewaehlt){
-                String[] klassenNamen = Arrays.copyOf(tmpKlassenNamen.toArray(), tmpKlassenNamen.size(), String[].class);
-                for (String klasse : klassenNamen){
-                    DataHandler.readBilder(klasse);
-                }
-                new SpielGUI(Classlet.neueSchuelerListe(klassenNamen), schuelerIndex, modus);
+            String[] klassenNamen = klassenNamen();
+            if (klassenNamen.length > 0){
+                new SpielGUI(Classlet.neueRandomSchuelerListe(klassenNamen), schuelerIndex, modus);
             }
-
         }
     }
 
@@ -133,6 +142,17 @@ public class HauptseiteGUI extends JFrame {
         public void actionPerformed(ActionEvent e) {
             DataHandler.readHistory();
             new HistoryGUI(DataHandler.getHistories());
+        }
+    }
+
+    class UebersichtButtonListener implements ActionListener{
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            String[] klassenNamen = klassenNamen();
+            if (klassenNamen.length > 0){
+                new UebersichtGUI(DataHandler.schuelerListe(klassenNamen), klassenNamen);
+            }
         }
     }
 }

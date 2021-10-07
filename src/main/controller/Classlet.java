@@ -34,9 +34,10 @@ public class Classlet {
 
     }
 
-    public static Vector<Schueler> neueSchuelerListe(String[] klassenNamen){
+    public static Vector<Schueler> neueRandomSchuelerListe(String[] klassenNamen){
         return DataHandler.getInstance().randomSchuelerListe(klassenNamen);
     }
+
 
 
 

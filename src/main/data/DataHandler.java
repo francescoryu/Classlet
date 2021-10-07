@@ -173,6 +173,21 @@ public class DataHandler {
         }
     }
 
+    public static String notizenText(Schueler schueler){
+        if (schueler.getNotizID() != 0){
+            Scanner scanner;
+            try {
+                File notizFile = new File(getProperty("resourcePath") + schueler.getKlassenName() + "/Notizen/" + schueler.getNotizID() + ".txt");
+                scanner = new Scanner(notizFile);
+            } catch (FileNotFoundException e){
+                e.printStackTrace();
+                throw new RuntimeException();
+            }
+            return scanner.next();
+        }
+        return "";
+    }
+
     /**
      * Liefert alle im resourse-Folder enthaltenen Klassen
      * @return String[] - alle Klassennamen
@@ -187,6 +202,19 @@ public class DataHandler {
         }
 
         return Arrays.copyOf(tmpKlassenNamen.toArray(),tmpKlassenNamen.size(), String[].class);
+    }
+
+    public static Vector<Schueler> schuelerListe(String[] klassennamen){
+        for (String klasse : klassennamen){
+            readBilder(klasse);
+        }
+        Vector<Schueler> schuelerListe = new Vector<>();
+        for (String klassenname : klassennamen){
+            for (Map.Entry<String,Schueler> schuelerSet: klassen.get(klassenname).getSchuelers().entrySet()){
+                schuelerListe.add(schuelerSet.getValue());
+            }
+        }
+        return schuelerListe;
     }
 
     public static Vector<Schueler> randomSchuelerListe(String[] klassennamen){
@@ -259,6 +287,17 @@ public class DataHandler {
         return icon;
     }
 
+    public static Schueler schuelerFromImagepath(String path){
+        for (Klasse klasse : klassen.values()){
+            for (Schueler schueler : klasse.getSchuelers().values()){
+                if (schueler.getPath().equals(path)){
+                    return schueler;
+                }
+            }
+        }
+        return null;
+    }
+
     public static void writeHistory(String[] klassen, int prozent){
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
         String datum = dateTimeFormatter.format(LocalDateTime.now());
@@ -328,8 +367,13 @@ public class DataHandler {
                     String[] tmpString = bilderPath.split("resources");
                     String relativeBilderPath = tmpString[1].substring(1);
 
+                    bufferedWriter.write("<div>");
                     bufferedWriter.write("<img src=\"" + relativeBilderPath + "\", width=\"150\", height=\"150\">");
                     bufferedWriter.write("<h2>" + schuelerSet.getValue().getVorname() + " " + schuelerSet.getValue().getNachname() + "</h2>");
+                    if (schuelerSet.getValue().getNotizID() != 0){
+                        bufferedWriter.write("<p>" + DataHandler.notizenText(schuelerSet.getValue()) + "</p><br>");
+                    }
+                    bufferedWriter.write("</div>");
                 }
                 bufferedWriter.write("<br>");
             }
