@@ -16,22 +16,18 @@ import java.util.Vector;
 
 public class Classlet {
     private DataHandler dataHandler;
-
-    private SpielGUI spielGUI;
     private HauptseiteGUI haupseiteGUI;
-    private static String[] klassenliste;
+    private String[] klassenliste;
 
     public Classlet(){
-        dataHandler = DataHandler.getInstance();
-        klassenliste = new String[1];
-        klassenliste[0] = "IA21b";
+        this.dataHandler = DataHandler.getInstance();
+        this.klassenliste = dataHandler.alleKlassenNamen();
 
-        dataHandler.readBilder(klassenliste[0]);
+        for (String klasse : klassenliste){
+            dataHandler.readBilder(klasse);
+        }
 
-        haupseiteGUI = new HauptseiteGUI(0, dataHandler.alleKlassenNamen());
-        //dataHandler.writeHTML(klassenliste);
-
-
+        haupseiteGUI = new HauptseiteGUI(0, klassenliste);
     }
 
     public static Vector<Schueler> neueRandomSchuelerListe(String[] klassenNamen){
@@ -39,22 +35,7 @@ public class Classlet {
     }
 
 
-
-
-
-
     public static void main(String[] args) {
-        DataHandler handler = DataHandler.getInstance();
         new Classlet();
-        /*
-        System.out.println(DataHandler.getProperty("resourcePath"));
-        DataHandler handler = DataHandler.getInstance();
-        handler.readBilder("IM21a");
-
-        System.out.println(DataHandler.getKlassen().get("IM21a").getName());
-        DataHandler.changeNotizen(DataHandler.getKlassen().get("IM21a").getSchuelers().get("Lucas_Blom"), "Testtestetst");
-        DataHandler.changeNotizen(DataHandler.getKlassen().get("IM21a").getSchuelers().get("Marco_Spina"), "Bitet");
-
-         */
     }
 }

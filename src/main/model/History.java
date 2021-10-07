@@ -14,7 +14,7 @@ public class History {
     private int prozent;
 
     /**
-     * Default-Konstruktor, damit das JSON Einlesen funktioniert
+     * Default-Konstruktor, damit das JSON-Einlesen funktioniert
      */
     public History(){
 

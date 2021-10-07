@@ -82,7 +82,6 @@ public class HauptseiteGUI extends JFrame {
         setResizable(false);
         setSize(840, 470);
         setVisible(true);
-
     }
 
     private void addListeners(int schuelerIndex){

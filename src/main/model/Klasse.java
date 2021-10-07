@@ -23,6 +23,7 @@ public class Klasse {
         schuelers.put(schueler.getVorname() + "_" +schueler.getNachname(),schueler);
     }
 
+
     //Getter & Setter
 
     public String getName() {

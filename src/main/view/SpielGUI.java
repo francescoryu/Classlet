@@ -78,8 +78,6 @@ public class SpielGUI extends JFrame {
         b4.setBackground(Color.white);
 
 
-
-
         //Panel
         optionPanel = new JPanel(new GridLayout(2, 2, 100, 50));
         optionPanel.add(b1);
@@ -144,7 +142,6 @@ public class SpielGUI extends JFrame {
         auswahlButtonListener = new AuswahlButton(modus);
         stopButtonListener = new StopButton();
         nextButtonListener = new NextButton(schuelerIndex, schuelerListe, modus);
-
 
         b1.addActionListener(auswahlButtonListener);
         b2.addActionListener(auswahlButtonListener);

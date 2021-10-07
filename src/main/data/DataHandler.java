@@ -13,6 +13,7 @@ import java.awt.*;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -328,14 +329,18 @@ public class DataHandler {
         String historyPath = getProperty("resourcePath") + "history.json";
 
         try {
-            byte[] jsonData = jsonData = Files.readAllBytes(Paths.get(historyPath));
-            if (jsonData.length > 0){
-                ObjectMapper objectMapper = new ObjectMapper();
-                History[] historiesJSON = objectMapper.readValue(jsonData, History[].class);
+            try {
+                byte[] jsonData = Files.readAllBytes(Paths.get(historyPath));
+                if (jsonData.length > 0){
+                    ObjectMapper objectMapper = new ObjectMapper();
+                    History[] historiesJSON = objectMapper.readValue(jsonData, History[].class);
 
-                for (History history : historiesJSON){
-                    histories.add(history);
+                    for (History history : historiesJSON){
+                        histories.add(history);
+                    }
                 }
+            } catch (NoSuchFileException e){
+                //nichts
             }
 
         } catch (IOException e){

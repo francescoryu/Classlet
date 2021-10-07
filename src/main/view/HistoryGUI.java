@@ -15,7 +15,6 @@ import java.util.Vector;
  */
 
 public class HistoryGUI extends JFrame {
-
     private JScrollPane jScrollPane;
     private JPanel panel;
     private JLabel title;
@@ -67,5 +66,4 @@ public class HistoryGUI extends JFrame {
         this.add(title, BorderLayout.NORTH);
         this.setVisible(true);
     }
-
 }

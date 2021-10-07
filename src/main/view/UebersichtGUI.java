@@ -4,7 +4,6 @@ import main.data.DataHandler;
 import main.model.Schueler;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -104,6 +103,7 @@ public class UebersichtGUI extends JFrame{
         descriptionFocusListener = new DescriptionFocusListener();
         descriptionKeyListener = new DescriptionKeyListener();
         htmlButtonListener = new HtmlButtonListener(klassenNamen);
+
         for (JTextField desc : descriptionsVector){
             desc.addFocusListener(descriptionFocusListener);
             desc.addActionListener(descriptionKeyListener);
