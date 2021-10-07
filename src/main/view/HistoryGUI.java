@@ -48,7 +48,7 @@ public class HistoryGUI extends JFrame {
                     klassenListe += klasse;
                 }
                 else {
-                    klassenListe += "," + klasse;
+                    klassenListe += ", " + klasse;
                 }
 
             }

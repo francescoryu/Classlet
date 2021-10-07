@@ -24,14 +24,18 @@ public class Classlet {
     public Classlet(){
         dataHandler = DataHandler.getInstance();
         klassenliste = new String[1];
-        klassenliste[0] = "IM21a";
+        klassenliste[0] = "IA21b";
+
         dataHandler.readBilder(klassenliste[0]);
 
-        haupseiteGUI = new HauptseiteGUI(dataHandler.randomSchuelerListe(klassenliste),0);
+        haupseiteGUI = new HauptseiteGUI(0, dataHandler.alleKlassenNamen());
+        //dataHandler.writeHTML(klassenliste);
+
+
     }
 
-    public static Vector<Schueler> neueSchuelerListe(){
-        return DataHandler.getInstance().randomSchuelerListe(klassenliste);
+    public static Vector<Schueler> neueSchuelerListe(String[] klassenNamen){
+        return DataHandler.getInstance().randomSchuelerListe(klassenNamen);
     }
 
 

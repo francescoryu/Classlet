@@ -173,6 +173,22 @@ public class DataHandler {
         }
     }
 
+    /**
+     * Liefert alle im resourse-Folder enthaltenen Klassen
+     * @return String[] - alle Klassennamen
+     */
+    public static String[] alleKlassenNamen(){
+        Vector<String> tmpKlassenNamen = new Vector<>();
+
+        for (File file : new File(getProperty("resourcePath")).listFiles()){
+            if (file.isDirectory()){
+                tmpKlassenNamen.add(file.getName());
+            }
+        }
+
+        return Arrays.copyOf(tmpKlassenNamen.toArray(),tmpKlassenNamen.size(), String[].class);
+    }
+
     public static Vector<Schueler> randomSchuelerListe(String[] klassennamen){
         Vector<Schueler> schuelerListe = new Vector<>();
         for (String klassenname : klassennamen){
@@ -290,7 +306,43 @@ public class DataHandler {
 
     }
 
-    //public static void write
+    public static void writeHTML(String[] klassennamen){
+        String filename = "Klassenliste";
+        for (int i = 0; i < klassennamen.length; i++) {
+            filename += "_" + klassennamen[i];
+        }
+        File htmlFile;
+        BufferedWriter bufferedWriter;
+
+        try {
+            htmlFile = new File(getProperty("resourcePath") + filename + ".html");
+            bufferedWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(htmlFile), StandardCharsets.UTF_8));
+
+            bufferedWriter.write("<html><head><meta charset=\"utf-8\"></head><body>");
+            for (int i = 0; i < klassennamen.length; i++) {
+                bufferedWriter.write("<h1>" + klassennamen[i] + "</h1>");
+
+
+                for (Map.Entry<String,Schueler> schuelerSet: klassen.get(klassennamen[i]).getSchuelers().entrySet()){
+                    String bilderPath = schuelerSet.getValue().getPath();
+                    String[] tmpString = bilderPath.split("resources");
+                    String relativeBilderPath = tmpString[1].substring(1);
+
+                    bufferedWriter.write("<img src=\"" + relativeBilderPath + "\", width=\"150\", height=\"150\">");
+                    bufferedWriter.write("<h2>" + schuelerSet.getValue().getVorname() + " " + schuelerSet.getValue().getNachname() + "</h2>");
+                }
+                bufferedWriter.write("<br>");
+            }
+            bufferedWriter.write("</body></html>");
+            bufferedWriter.close();
+
+        } catch (IOException e){
+            e.printStackTrace();
+            throw new RuntimeException();
+        }
+
+
+    }
 
 
     //Getter

@@ -27,7 +27,7 @@ public class SpielGUI extends JFrame {
     private JFrame fr;
     private JButton b1, b2, b3, b4;
     private JButton stop, next;
-    private JLabel lbl;
+    JLabel lbl;
     private JLabel jp;
     private JLabel cnt;
     private JPanel contentPanel, optionPanel, btnPanel, imgPanel;
@@ -39,7 +39,7 @@ public class SpielGUI extends JFrame {
         fr.setSize(840,600);
         fr.setLocationRelativeTo(null);
 
-        lbl = new JLabel("Classlet");
+        lbl = new JLabel();
         lbl.setHorizontalAlignment(JLabel.CENTER);
         lbl.setFont(new Font("Monospace", Font.BOLD, 20));
 
@@ -322,6 +322,7 @@ public class SpielGUI extends JFrame {
                         jp.setText(schuelerListe.get(schuelerIndex).getVorname() + " " + schuelerListe.get(schuelerIndex).getNachname());
                     }
 
+                    lbl.setText(schuelerListe.get(schuelerIndex).getKlassenName());
 
                     schuelerIndex++;
                     cnt.setText(schuelerIndex + "/" + schuelerListe.size());
