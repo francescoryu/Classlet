@@ -26,7 +26,6 @@ public class UebersichtGUI extends JFrame{
     private JScrollPane scrollPane;
     private JButton printToHTML;
     private DescriptionFocusListener descriptionFocusListener;
-    private DescriptionKeyListener descriptionKeyListener;
     private HtmlButtonListener htmlButtonListener;
     Vector<JTextField> descriptionsVector;
 
@@ -101,12 +100,10 @@ public class UebersichtGUI extends JFrame{
 
     private void addListeners(String[] klassenNamen){
         descriptionFocusListener = new DescriptionFocusListener();
-        descriptionKeyListener = new DescriptionKeyListener();
         htmlButtonListener = new HtmlButtonListener(klassenNamen);
 
         for (JTextField desc : descriptionsVector){
             desc.addFocusListener(descriptionFocusListener);
-            desc.addActionListener(descriptionKeyListener);
         }
         printToHTML.addActionListener(htmlButtonListener);
     }
@@ -124,16 +121,8 @@ public class UebersichtGUI extends JFrame{
         }
     }
 
-    class DescriptionKeyListener implements ActionListener{
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-           descriptionFocusListener.focusLostAction((JTextField) e.getSource());
-        }
-    }
 
     class DescriptionFocusListener implements FocusListener{
-
         @Override
         public void focusGained(FocusEvent e) {
             JTextField desc = (JTextField) e.getSource();
@@ -142,21 +131,13 @@ public class UebersichtGUI extends JFrame{
             }
         }
 
-        public void focusLostAction(JTextField desc){
-            desc.getText().trim();
-            if (!desc.getText().equals("") && !desc.getText().isEmpty() && !desc.getText().equals("Notiz hinzufügen")){
-                DataHandler.changeNotizen(DataHandler.schuelerFromImagepath(desc.getName()), desc.getText());
-            }
-            else {
-                desc.setText("Notiz hinzufügen");
-            }
-        }
 
         @Override
         public void focusLost(FocusEvent e) {
             JTextField desc = (JTextField)e.getSource();
             desc.getText().trim();
-            if (!desc.getText().equals("") && !desc.getText().isEmpty() && desc.getText().equals("Notiz hinzufügen")){
+            String test = desc.getText();
+            if (!desc.getText().equals("") && !desc.getText().isEmpty() && !desc.getText().equals("Notiz hinzufügen")){
                 DataHandler.changeNotizen(DataHandler.schuelerFromImagepath(desc.getName()), desc.getText());
             }
             else {
