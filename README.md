@@ -1,6 +1,37 @@
 # Classlet
 Classlet ist Schülernamen-Lernsystem
 
+## Neue Klassen importieren:
+Im Repository ist eine Demo-Klasse hinterlegt.
+Um neue Klassen hinzuzufügen, muss eine bestimmte Ordnerstruktur beibehalten werden:
+
+Der Pfad zum Ordner "resources" kann über die Datei "config.properties" geändert werden.
+
+**"resources" muss folgende Ordnerstrukturen beibehalten:**
+
+* resources/
+   * Klassenname/
+      * Bilder/
+          * Vorname_Nachname.Dateityp
+          * ...
+      * Notizen/ (automatisch genertiert)
+      * history.json (automatisch generiert)
+      * allfällige HTML-Listen (wenn von Benutzer exportiert)
+          
+**oder:**
+
+* resources/
+   * Klassenname/
+      * Bilder/
+          * xyz/
+              * Vorname_Nachname.Dateityp
+              * ...
+      * ...
+
+
+Die zweite Struktur ist dafür gedacht, dass man direkt Moode-Abgaben von Bildern hineinziehen kann.
+Beim ersten Ausführen wird dann diese Struktur zur anderen Struktur automatisch geändert.
+
 
 ## Installation:
 Classlet benötigt eine externe Library, die im Repository enthalten ist. Der Anwender muss diese lediglich noch importieren.
