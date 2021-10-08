@@ -20,7 +20,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 /**
- * DataHandler für das Einlesen der Bilder und der Property-Datei
+ * DataHandler für das Einlesen der Bilder, Property & History-Datei.
+ * Zudem exportiert es ins HTML und schreibt die History-Datei
  *
  * @author Martin Düppenbecker
  * @version 1.0
@@ -157,6 +158,7 @@ public class DataHandler {
                 String dateiEndung = schuelerFile.getName().split("\\.")[1];
                 String[] attribute = schuelerFile.getName().split("\\.")[0].split("_");
                 String neuerPath = schuelerFile.getParent() + "/" + attribute[0] + "_" + attribute[1] + "_" + newNotizID + "." + dateiEndung;
+                neuerPath = Paths.get(neuerPath).toString();
                 Files.move(Paths.get(schueler.getPath()), Paths.get(neuerPath));
 
                 schueler.setPath(neuerPath);
@@ -164,7 +166,13 @@ public class DataHandler {
 
                 if (Files.notExists(Paths.get(pathNotizen).getParent())) Files.createDirectories(Paths.get(pathNotizen).getParent());
                 BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(pathNotizen));
-                bufferedWriter.write(notizen);
+                String[] notizenWoerter = notizen.split(" ");
+                for (int i = 0; i < notizenWoerter.length; i++) {
+                    bufferedWriter.write(notizenWoerter[i]);
+                    if (i + 1 < notizenWoerter.length){
+                        bufferedWriter.write("_");
+                    }
+                }
                 bufferedWriter.close();
             }
 
@@ -174,6 +182,12 @@ public class DataHandler {
         }
     }
 
+    /**
+     * Gibt den Text der Notiz eines Schülers zurück.
+     * Wenn keine Notiz vorhanden ist, dann wird ein leerer String zurückgegeben
+     * @param schueler
+     * @return Text der Notiz
+     */
     public static String notizenText(Schueler schueler){
         if (schueler.getNotizID() != 0){
             Scanner scanner;
@@ -205,6 +219,11 @@ public class DataHandler {
         return Arrays.copyOf(tmpKlassenNamen.toArray(),tmpKlassenNamen.size(), String[].class);
     }
 
+    /**
+     * Listet alle Schüler der ausgewählten Klassen auf und gibt diese in einem Schueler-Vektor zurück
+     * @param klassennamen - String-Array der Namen der Klassen
+     * @return alle Schüler der Klassen
+     */
     public static Vector<Schueler> schuelerListe(String[] klassennamen){
         for (String klasse : klassennamen){
             readBilder(klasse);
@@ -218,18 +237,25 @@ public class DataHandler {
         return schuelerListe;
     }
 
+    /**
+     * Gibt alle Schüler der ausgewählten Klassen in einem gemischten Schueler-Vektor zurück
+     * @param klassennamen - String-Array der Namen der Klassen
+     * @return alle Schüler der Klassen gemischt
+     */
     public static Vector<Schueler> randomSchuelerListe(String[] klassennamen){
-        Vector<Schueler> schuelerListe = new Vector<>();
-        for (String klassenname : klassennamen){
-            for (Map.Entry<String,Schueler> schuelerSet: klassen.get(klassenname).getSchuelers().entrySet()){
-                schuelerListe.add(schuelerSet.getValue());
-            }
-        }
+        Vector<Schueler> schuelerListe = schuelerListe(klassennamen);
         Collections.shuffle(schuelerListe);
 
         return schuelerListe;
     }
 
+    /**
+     * Gibt eine Liste der Namen, zufällig ausgewählter, und einem spezifizierten, Schüler zurück
+     * @param schuelerAuswahl - Der Pool, aus dem die Schüler ausgewählt werden sollen
+     * @param richtigSchueler - Der eine richtige Schüler
+     * @param anzahl - Die Grösse der Liste, die zurückgegeben wird
+     * @return String[] namen - Die Namen der Schüler
+     */
     public static String[] auswahlDerNamen(Vector<Schueler> schuelerAuswahl, Schueler richtigSchueler, int anzahl){
         Vector<String> namen = new Vector<>(anzahl);
         Vector<Schueler> schuelerAuswahlShuffled = (Vector<Schueler>) schuelerAuswahl.clone();
@@ -249,6 +275,14 @@ public class DataHandler {
         return Arrays.copyOf(namen.toArray(), namen.toArray().length, String[].class);
     }
 
+    /**
+     * Wie auswahlDerNamen(...), nur anstatt von Namen, gibt es Bilder zurück
+     * Zudem wird den einzelnen Bildern als Description, der Name der Schüler angegeben
+     * @param schuelerAuswahl - Der Pool, aus dem die Schüler ausgewählt werden sollen
+     * @param richtigSchueler - Der eine richtige Schüler
+     * @param anzahl - Die Grösse der Liste, die zurückgegeben wird
+     * @return ImageIcon[] bilder - Die Bilder der Schüler
+     */
     public static ImageIcon[] auswahlDerBilder(Vector<Schueler> schuelerAuswahl, Schueler richtigSchueler, int anzahl){
         Vector<ImageIcon> bilder = new Vector<>(anzahl);
         Vector<Schueler> schuelerAuswahlShuffled = (Vector<Schueler>)schuelerAuswahl.clone();
@@ -288,6 +322,11 @@ public class DataHandler {
         return icon;
     }
 
+    /**
+     * Sucht einen Schüler nach dem Attribut path
+     * @param path - Der Bilder-Path des Schülers, der gesucht ist
+     * @return Schueler - Der gesuchte Schüler
+     */
     public static Schueler schuelerFromImagepath(String path){
         for (Klasse klasse : klassen.values()){
             for (Schueler schueler : klasse.getSchuelers().values()){
@@ -299,6 +338,11 @@ public class DataHandler {
         return null;
     }
 
+    /**
+     * Schreibt die neue History ins history.json
+     * @param klassen - Die Klassennamen, mit denen gespielt worden ist
+     * @param prozent - Die Prozentzahl, der erspielten Richtig-Quote
+     */
     public static void writeHistory(String[] klassen, int prozent){
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
         String datum = dateTimeFormatter.format(LocalDateTime.now());
@@ -325,6 +369,9 @@ public class DataHandler {
 
     }
 
+    /**
+     * Liest history.json in den Vector histories ein
+     */
     public static void readHistory(){
         String historyPath = getProperty("resourcePath") + "history.json";
 
@@ -350,6 +397,10 @@ public class DataHandler {
 
     }
 
+    /**
+     * Exportiert die Klassenliste in ein HTML-Dokument, damit es ausgedruckt werden kann
+     * @param klassennamen - Die Liste der Klassennamen, die exportiert werden sollen
+     */
     public static void writeHTML(String[] klassennamen){
         String filename = "Klassenliste";
         for (int i = 0; i < klassennamen.length; i++) {

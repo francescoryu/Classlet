@@ -7,7 +7,7 @@ import java.awt.*;
 import java.util.Vector;
 
 /**
- * Beschreibung der Klasse
+ * GUI-Klasse der History
  *
  * @author Martin Düppenbecker
  * @version 1.0

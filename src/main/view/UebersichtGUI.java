@@ -12,7 +12,8 @@ import java.awt.event.FocusListener;
 import java.util.Vector;
 
 /**
- * Beschreibung der Klasse
+ * GUI-Klasse für die Übersicht aller Schüler
+ * Die Klasse enthält anonyme Controllerklassen
  *
  * @author Martin Düppenbecker
  * @author Stefan Thomsen
@@ -98,6 +99,10 @@ public class UebersichtGUI extends JFrame{
         setVisible(true);
     }
 
+    /**
+     * Fügt die Listeners den Buttons hinzu
+     * @param klassenNamen
+     */
     private void addListeners(String[] klassenNamen){
         descriptionFocusListener = new DescriptionFocusListener();
         htmlButtonListener = new HtmlButtonListener(klassenNamen);
@@ -107,6 +112,9 @@ public class UebersichtGUI extends JFrame{
         }
         printToHTML.addActionListener(htmlButtonListener);
     }
+
+
+    //Listenerklassen
 
     class HtmlButtonListener implements ActionListener{
         private String[] klassenNamen;
@@ -120,7 +128,6 @@ public class UebersichtGUI extends JFrame{
             DataHandler.writeHTML(klassenNamen);
         }
     }
-
 
     class DescriptionFocusListener implements FocusListener{
         @Override

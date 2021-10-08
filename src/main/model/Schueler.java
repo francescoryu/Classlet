@@ -1,7 +1,7 @@
 package main.model;
 
 /**
- * Beschreibung der Klasse
+ * Modelklassen der Schüler
  *
  * @author Martin Düppenbecker
  * @version 1.0

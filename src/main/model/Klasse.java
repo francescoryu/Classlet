@@ -3,7 +3,7 @@ package main.model;
 import java.util.HashMap;
 
 /**
- * Beschreibung der Klasse
+ * Modelklasse der Klasse, die mit Schülern gefüllt ist
  *
  * @author Martin Düppenbecker
  * @version 1.0

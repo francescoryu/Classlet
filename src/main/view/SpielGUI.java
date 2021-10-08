@@ -11,7 +11,8 @@ import java.util.Arrays;
 import java.util.Vector;
 
 /**
- * GUI für das Quiz, inklusive anonyme Klassen als Controller
+ * GUI-Klasse für das Quiz
+ * Die Klasse enthält anonyme Controllerklassen
  *
  * @author Martin Düppenbecker
  * @author Stefan Thomsen
@@ -137,7 +138,10 @@ public class SpielGUI extends JFrame {
         fr.setVisible(true);
     }
 
-
+    /**
+     * Fügt die Listeners den Buttons hinzu
+     * @param schuelerIndex
+     */
     private void addListeners(int schuelerIndex, Vector<Schueler> schuelerListe, int modus){
         auswahlButtonListener = new AuswahlButton(modus);
         stopButtonListener = new StopButton();
@@ -151,6 +155,9 @@ public class SpielGUI extends JFrame {
         stop.addActionListener(new StopButton());
         next.addActionListener(nextButtonListener);
     }
+
+
+    //Listenerklassen
 
     class AuswahlButton implements ActionListener{
         private int laenge = 0;
@@ -332,6 +339,9 @@ public class SpielGUI extends JFrame {
             }
         }
     }
+
+
+    //andere Klassen
 
     private static class RoundedBorder implements Border {
 

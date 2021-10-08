@@ -1,7 +1,8 @@
 package main.view;
 
 /**
- * Beschreibung der Klasse
+ * GUI-Klasse des Hauptmenüs
+ * Die Klasse enthält anonyme Controllerklassen
  *
  * @author Martin Düppenbecker
  * @author Francesco Ryu
@@ -9,7 +10,6 @@ package main.view;
  * @since 05.10.2021
  */
 
-import main.controller.Classlet;
 import main.data.DataHandler;
 
 import javax.swing.*;
@@ -84,6 +84,10 @@ public class HauptseiteGUI extends JFrame {
         setVisible(true);
     }
 
+    /**
+     * Fügt die Listeners den Buttons hinzu
+     * @param schuelerIndex
+     */
     private void addListeners(int schuelerIndex){
         startButtonListener = new StartButtonListener(schuelerIndex);
         uebersichtButtonListener = new UebersichtButtonListener();
@@ -114,6 +118,9 @@ public class HauptseiteGUI extends JFrame {
         return new String[0];
     }
 
+
+    //Listenerklassen
+
     class StartButtonListener implements ActionListener{
         private int schuelerIndex;
 
@@ -130,7 +137,7 @@ public class HauptseiteGUI extends JFrame {
 
             String[] klassenNamen = klassenNamen();
             if (klassenNamen.length > 0){
-                new SpielGUI(Classlet.neueRandomSchuelerListe(klassenNamen), schuelerIndex, modus);
+                new SpielGUI(DataHandler.randomSchuelerListe(klassenNamen), schuelerIndex, modus);
             }
         }
     }

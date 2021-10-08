@@ -1,13 +1,11 @@
 package main.controller;
 
 import main.data.DataHandler;
-import main.model.Schueler;
 import main.view.*;
 
-import java.util.Vector;
 
 /**
- * Beschreibung der Klasse
+ * Main-Klasse der Applikation
  *
  * @author Martin Düppenbecker
  * @version 1.0
@@ -28,10 +26,6 @@ public class Classlet {
         }
 
         haupseiteGUI = new HauptseiteGUI(0, klassenliste);
-    }
-
-    public static Vector<Schueler> neueRandomSchuelerListe(String[] klassenNamen){
-        return DataHandler.getInstance().randomSchuelerListe(klassenNamen);
     }
 
 
