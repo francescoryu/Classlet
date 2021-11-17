@@ -14,6 +14,7 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -195,8 +196,13 @@ public class DataHandler {
                 File notizFile = new File(getProperty("resourcePath") + schueler.getKlassenName() + "/Notizen/" + schueler.getNotizID() + ".txt");
                 scanner = new Scanner(notizFile);
             } catch (FileNotFoundException e){
-                e.printStackTrace();
-                throw new RuntimeException();
+                String neuePathString = Paths.get((Paths.get(schueler.getPath()).getParent()).toString() + "/" + schueler.getVorname() + "_" + schueler.getNachname() + "." + schueler.getPath().split("\\.")[1]).toString();
+                try {
+                    Files.move(Paths.get(schueler.getPath()), Paths.get(neuePathString));
+                } catch (IOException ioException) {
+                    ioException.printStackTrace();
+                }
+                return "";
             }
             return scanner.next();
         }
